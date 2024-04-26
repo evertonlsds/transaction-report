@@ -1,7 +1,5 @@
 package br.com.evertonsantos.transactionreport;
 
-
-
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -26,21 +24,21 @@ public class BatchConfig {
     }
 
     @Bean
-    Job job(Step step){
+    Job job(Step step) {
         return (Job) new JobBuilder("job", jobRepository)
-        .start(step)
-        .incrementer(new RunIdIncrementer())
-        .build();
-
+                .start(step)
+                .incrementer(new RunIdIncrementer())
+                .build();
 
     }
+
     @Bean
-    Step step(ItemReader reader, ItemProcessor processor, ItemWriter writer ){
+    Step step(ItemReader<TransacaoCNAB> reader, ItemProcessor processor, ItemWriter writer) {
         return new StepBuilder("step", jobRepository)
-        .chunk(1000, transactionManager)
-        .reader(reader)
-        .processor(processor)
-        .writer(writer)
-        .build();
+                .chunk(1000, transactionManager)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
     }
 }
