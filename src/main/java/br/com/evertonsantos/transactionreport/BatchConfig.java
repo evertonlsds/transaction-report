@@ -1,5 +1,7 @@
 package br.com.evertonsantos.transactionreport;
 
+import java.math.BigDecimal;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -19,53 +21,71 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class BatchConfig {
-    private PlatformTransactionManager transactionManager;
-    private JobRepository jobRepository;
+   private PlatformTransactionManager transactionManager;
+   private JobRepository jobRepository;
 
-    public BatchConfig(PlatformTransactionManager transactionManager, JobRepository jobRepository) {
-        this.transactionManager = transactionManager;
-        this.jobRepository = jobRepository;
-    }
+   public BatchConfig(PlatformTransactionManager transactionManager, JobRepository jobRepository) {
+      this.transactionManager = transactionManager;
+      this.jobRepository = jobRepository;
+   }
 
-    @Bean
-    Job job(Step step) {
-        return (Job) new JobBuilder("job", jobRepository)
-                .start(step)
-                .incrementer(new RunIdIncrementer())
-                .build();
+   @Bean
+   Job job(Step step) {
+      return (Job) new JobBuilder("job", jobRepository)
+            .start(step)
+            .incrementer(new RunIdIncrementer())
+            .build();
 
-    }
+   }
 
-    @Bean
-    Step step(
-            ItemReader<TransacaoCNAB> reader,
-            ItemProcessor<TransacaoCNAB, Transacao> processor,
-            ItemWriter<Transacao> writer) {
-        return new StepBuilder("step", jobRepository)
-                .<TransacaoCNAB, Transacao>chunk(1000, transactionManager)
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
-                .build();
-    }
+   @Bean
+   Step step(
+         ItemReader<TransacaoCNAB> reader,
+         ItemProcessor<TransacaoCNAB, Transacao> processor,
+         ItemWriter<Transacao> writer) {
+      return new StepBuilder("step", jobRepository)
+            .<TransacaoCNAB, Transacao>chunk(1000, transactionManager)
+            .reader(reader)
+            .processor(processor)
+            .writer(writer)
+            .build();
+   }
 
-    @Bean
-    FlatFileItemReader<TransacaoCNAB> reader() {
-        return new FlatFileItemReaderBuilder<TransacaoCNAB>()
-                .name("reader")
-                .resource(new FileSystemResource("files/CNAB.txt"))
-                .fixedLength()
-                .columns(
-                        new Range(1, 1), new Range(2, 9),
-                        new Range(10, 19), new Range(20, 30),
-                        new Range(31, 42), new Range(43, 48),
-                        new Range(49, 62), new Range(63, 80)
+   @Bean
+   FlatFileItemReader<TransacaoCNAB> reader() {
+      return new FlatFileItemReaderBuilder<TransacaoCNAB>()
+            .name("reader")
+            .resource(new FileSystemResource("files/CNAB.txt"))
+            .fixedLength()
+            .columns(
+                  new Range(1, 1), new Range(2, 9),
+                  new Range(10, 19), new Range(20, 30),
+                  new Range(31, 42), new Range(43, 48),
+                  new Range(49, 62), new Range(63, 80)
 
-                )
-                .names(
-                        "tipo", "data", "valor", "cpf",
-                        "cartao", "hora", "donoDaLoja", "nomeDaLoja")
-                .targetType(TransacaoCNAB.class)
-                .build();
-    }
+            )
+            .names(
+                  "tipo", "data", "valor", "cpf",
+                  "cartao", "hora", "donoDaLoja", "nomeDaLoja")
+            .targetType(TransacaoCNAB.class)
+            .build();
+   }
+
+   @Bean
+   ItemProcessor<TransacaoCNAB, Transacao> processor() {
+      return item -> {
+         var transacao = new Transacao(
+               null, item.tipo(), null, null, item.cpf(),
+               item.cartao(), null, item.donoDaLoja().trim(),
+               item.nomeDaLoja().trim())
+               .withValor(
+                     item.valor().divide(BigDecimal.valueOf(100)))
+                     .withData(item.data())
+                     .withHora(item.hora());
+
+         return transacao;
+      };
+
+   }
+
 }
