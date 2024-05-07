@@ -10,7 +10,7 @@ BigDecimal valor,
 Long cpf,
 String cartao,
 String hora,
-String donoloja,
+String donoDaLoja,
 String nomeDaLoja) {
     
 }

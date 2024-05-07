@@ -13,7 +13,7 @@ public record Transacao(
         Long cpf,
         String cartao,
         Time hora,
-        String donoloja,
+        String donoDaLoja,
         String nomeDaLoja) {
 
 }
