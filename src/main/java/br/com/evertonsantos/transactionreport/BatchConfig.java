@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -17,7 +18,7 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.Range;
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -35,7 +36,7 @@ public class BatchConfig {
 
    @Bean
    Job job(Step step) {
-      return (Job) new JobBuilder("job", jobRepository)
+      return  new JobBuilder("job", jobRepository)
             .start(step)
             .incrementer(new RunIdIncrementer())
             .build();
@@ -99,7 +100,7 @@ public class BatchConfig {
       .sql("""
             INSERT INTO transacao(
                tipo, data, valor, cpf, cartao,
-               hora,dono_loja, nome_loja
+               hora, dono_loja, nome_loja
             )VALUES(
                :tipo, :data, :valor, :cpf, :cartao, :hora, :donoDaLoja, :nomeDaLoja
             )

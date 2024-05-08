@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS transacao (
     cartao varchar(255),
     hora time,
     dono_loja varchar(255),
-    nome_loja varchar(255),
+    nome_loja varchar(255)
 );
