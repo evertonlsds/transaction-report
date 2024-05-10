@@ -36,7 +36,7 @@ public class BatchConfig {
 
    @Bean
    Job job(Step step) {
-      return  new JobBuilder("job", jobRepository)
+      return new JobBuilder("job", jobRepository)
             .start(step)
             .incrementer(new RunIdIncrementer())
             .build();
@@ -80,13 +80,12 @@ public class BatchConfig {
    ItemProcessor<TransacaoCNAB, Transacao> processor() {
       return item -> {
          var transacao = new Transacao(
-               null, item.tipo(), null, null, item.cpf(),
+               null, item.tipo(), null,
+               item.valor().divide(BigDecimal.valueOf(100)), item.cpf(),
                item.cartao(), null, item.donoDaLoja().trim(),
                item.nomeDaLoja().trim())
-               .withValor(
-                     item.valor().divide(BigDecimal.valueOf(100)))
-                     .withData(item.data())
-                     .withHora(item.hora());
+               .withData(item.data())
+               .withHora(item.hora());
 
          return transacao;
       };
@@ -94,17 +93,17 @@ public class BatchConfig {
    }
 
    @Bean
-   JdbcBatchItemWriter<Transacao> writer(DataSource dataSource){
+   JdbcBatchItemWriter<Transacao> writer(DataSource dataSource) {
       return new JdbcBatchItemWriterBuilder<Transacao>()
-      .dataSource(dataSource)
-      .sql("""
-            INSERT INTO transacao(
-               tipo, data, valor, cpf, cartao,
-               hora, dono_loja, nome_loja
-            )VALUES(
-               :tipo, :data, :valor, :cpf, :cartao, :hora, :donoDaLoja, :nomeDaLoja
-            )
-            """)
+            .dataSource(dataSource)
+            .sql("""
+                  INSERT INTO transacao(
+                     tipo, data, valor, cpf, cartao,
+                     hora, dono_loja, nome_loja
+                  )VALUES(
+                     :tipo, :data, :valor, :cpf, :cartao, :hora, :donoDaLoja, :nomeDaLoja
+                  )
+                  """)
             .beanMapped()
             .build();
    }
