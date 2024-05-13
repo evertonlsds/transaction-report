@@ -1,4 +1,4 @@
-package br.com.evertonsantos.transactionreport;
+package br.com.evertonsantos.transactionreport.job;
 
 import java.math.BigDecimal;
 
@@ -23,6 +23,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import br.com.evertonsantos.transactionreport.domain.Transacao;
+import br.com.evertonsantos.transactionreport.domain.TransacaoCNAB;
 
 @Configuration
 public class BatchConfig {

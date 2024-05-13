@@ -1,4 +1,4 @@
-package br.com.evertonsantos.transactionreport;
+package br.com.evertonsantos.transactionreport.domain;
 
 import java.math.BigDecimal;
 import java.sql.Date;
