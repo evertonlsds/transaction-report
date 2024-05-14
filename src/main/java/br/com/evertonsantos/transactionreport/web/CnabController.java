@@ -1,9 +1,9 @@
 package br.com.evertonsantos.transactionreport.web;
 
-import br.com.evertonsantos.transactionreport.domain.CnabService;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import br.com.evertonsantos.service.CnabService;
 
 @RestController
 @RequestMapping("cnab")

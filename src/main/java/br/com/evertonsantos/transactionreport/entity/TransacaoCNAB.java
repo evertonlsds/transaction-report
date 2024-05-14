@@ -1,4 +1,4 @@
-package br.com.evertonsantos.transactionreport.domain;
+package br.com.evertonsantos.transactionreport.entity;
 
 import java.math.BigDecimal;
 

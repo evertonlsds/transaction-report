@@ -1,4 +1,4 @@
-package br.com.evertonsantos.transactionreport.domain;
+package br.com.evertonsantos.service;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -31,8 +31,8 @@ public class CnabService {
         file.transferTo(targetLocation);
 
         var jobParameters = new JobParametersBuilder()
-                .addJobParameter("cnab", file.getOriginalFilename(), String.class, false)
-                .addJobParameter("cnabFile", "file:" + targetLocation.toString(), String.class)
+                .addJobParameter("cnab", file.getOriginalFilename(), String.class, true)
+                .addJobParameter("cnabFile", "file:" + targetLocation.toString(), String.class, false)
                 .toJobParameters();
 
         jobLauncher.run(job, jobParameters);

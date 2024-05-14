@@ -28,8 +28,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import br.com.evertonsantos.transactionreport.domain.Transacao;
-import br.com.evertonsantos.transactionreport.domain.TransacaoCNAB;
+import br.com.evertonsantos.transactionreport.entity.Transacao;
+import br.com.evertonsantos.transactionreport.entity.TransacaoCNAB;
 
 @Configuration
 public class BatchConfig {
