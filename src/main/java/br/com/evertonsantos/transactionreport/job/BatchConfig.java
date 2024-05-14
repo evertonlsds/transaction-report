@@ -31,6 +31,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import br.com.evertonsantos.transactionreport.entity.Transacao;
 import br.com.evertonsantos.transactionreport.entity.TransacaoCNAB;
 
+
 @Configuration
 public class BatchConfig {
    private PlatformTransactionManager transactionManager;
