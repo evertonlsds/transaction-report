@@ -8,4 +8,12 @@ public record TransacaoReport(
     BigDecimal total,
     List<Transacao> transacoes) {
     
+        public TransacaoReport addTotal(BigDecimal valor){
+            return new TransacaoReport(nomeDaLoja, total.add(valor), transacoes);
+        }
+
+        public TransacaoReport addTransacao(Transacao transacao){
+            transacoes.add(transacao);
+            return new TransacaoReport(nomeDaLoja, total, transacoes);
+        }
 }
