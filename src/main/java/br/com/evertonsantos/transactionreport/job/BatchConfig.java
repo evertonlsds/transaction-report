@@ -28,9 +28,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import br.com.evertonsantos.transactionreport.entity.TipoTransacao;
 import br.com.evertonsantos.transactionreport.entity.Transacao;
 import br.com.evertonsantos.transactionreport.entity.TransacaoCNAB;
-
 
 @Configuration
 public class BatchConfig {
@@ -63,10 +63,11 @@ public class BatchConfig {
             .writer(writer)
             .build();
    }
+
    @StepScope
    @Bean
    FlatFileItemReader<TransacaoCNAB> reader(
-      @Value("#{jobParameters['cnabFile']}") Resource resource) {
+         @Value("#{jobParameters['cnabFile']}") Resource resource) {
       return new FlatFileItemReaderBuilder<TransacaoCNAB>()
             .name("reader")
             .resource(resource)
@@ -86,9 +87,15 @@ public class BatchConfig {
    @Bean
    ItemProcessor<TransacaoCNAB, Transacao> processor() {
       return item -> {
+         var tipoTransacao = TipoTransacao.findByTipo(item.tipo());
+         var valorNormalizado = item.valor()
+               .divide(new BigDecimal(100))
+               .multiply(tipoTransacao.getSinal());
+
          var transacao = new Transacao(
                null, item.tipo(), null,
-               item.valor().divide(BigDecimal.valueOf(100)), item.cpf(),
+               valorNormalizado,
+               item.cpf(),
                item.cartao(), null, item.donoDaLoja().trim(),
                item.nomeDaLoja().trim())
                .withData(item.data())
@@ -122,6 +129,6 @@ public class BatchConfig {
       jobLouncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
       jobLouncher.afterPropertiesSet();
       return jobLouncher;
-  }
+   }
 
 }
