@@ -1,5 +1,7 @@
 package br.com.evertonsantos.transactionreport.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import br.com.evertonsantos.transactionreport.entity.Transacao;
@@ -14,8 +16,8 @@ public class TransacaoService {
         this.repository = repository;
     }
 
-    public Iterable<Transacao> listTotaisTransacoesPorNomeDaLoja() {
-        var transacoes = repository.findAll();
+    public List<Transacao> listTotaisTransacoesPorNomeDaLoja() {
+        var transacoes = repository.findAllByOrderByNomeDaLojaAscIdDesc();
         return transacoes;
 
     }

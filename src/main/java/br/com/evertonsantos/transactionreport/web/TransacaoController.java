@@ -24,7 +24,7 @@ public class TransacaoController {
 
 
     @GetMapping
-    Iterable<Transacao> listAll(){
+    List<Transacao> listAll(){
         return service.listTotaisTransacoesPorNomeDaLoja();
     }
     
